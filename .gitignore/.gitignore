@@ -1,0 +1,9 @@
+*.gz
+*.zip
+*.exe
+*.rar
+
+flowers_dataset/
+lab3/flowers_dataset/
+cifar-10-batches-py/
+lab3/cifar-10-batches-py/
