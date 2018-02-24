@@ -31,15 +31,14 @@ def resize_to_input_and_save(input_image_path,
     return (img_array)
 
 # ----------------------------------Load best model--------------------------------------------------------
-path = 'saved_model/'
+path = 'best_model/'
 
 # Gets the name of the best model h5 file
 best_model_name = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and 'best_model' in i]
 print(best_model_name)
 
-# returns a compiled model
-# identical to the previous one
-model = load_model(os.path.join(path, best_model_name[2]))
+# returns the best model by the path
+model = load_model(os.path.join(path, best_model_name[0]))
 
 wanted_classes = ["dog", "cat", "bird", "horse", "frog"]
 img_dir = "images"
