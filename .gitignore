@@ -8,3 +8,8 @@ lab3/flowers_dataset/
 cifar-10-batches-py/
 lab3/cifar-10-batches-py/
 backup/
+
+*.jpg
+*.png
+ImageGeneration/inception_resnet_v2_weights_tf_dim_ordering_tf_kernels.h5
+ImageGeneration/.idea/
