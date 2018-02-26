@@ -9,7 +9,9 @@ cifar-10-batches-py/
 lab3/cifar-10-batches-py/
 backup/
 
-*.jpg
-*.png
 ImageGeneration/inception_resnet_v2_weights_tf_dim_ordering_tf_kernels.h5
 ImageGeneration/.idea/
+
+ImageGeneration/Resources/colored
+ImageGeneration/Resources/colored32
+ImageGeneration/Resources/grayscale
