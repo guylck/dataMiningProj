@@ -1,3 +1,4 @@
+from cv2.cv2 import cvtColor, COLOR_BGR2GRAY
 from keras.models import Model
 from keras.layers import Concatenate, Add, Average, Input, Dense, Flatten, BatchNormalization, Activation, LeakyReLU
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, UpSampling2D, Convolution2DTranspose
@@ -45,7 +46,7 @@ f3 = 5
 n1 = 64
 n2 = 32
 # parameters
-image_scale_multiplier = 1
+image_scale_multiplier = 3
 model_width = model_height = 32
 channels = 3
 
@@ -172,7 +173,8 @@ def image_generator(directory, scale_factor=2, target_shape=None, channels=3, sm
 
         for i, j in enumerate(index_array):
             x_fn = X_filenames[j]
-            img = imread(x_fn, mode='RGB')
+            img = imread(x_fn,0)
+            # img = cvtColor(img, COLOR_BGR2GRAY)
             if small_train_images:
                 img = imresize(img, (32 * image_scale_multiplier, 32 * image_scale_multiplier))
             img = img.astype('float32') / 255.
@@ -183,7 +185,8 @@ def image_generator(directory, scale_factor=2, target_shape=None, channels=3, sm
                 batch_x[i] = img
 
             y_fn = y_filenames[j]
-            img = imread(y_fn, mode="RGB")
+            img = imread(y_fn,0)
+            # img = cvtColor(img, COLOR_BGR2GRAY)
             img = img.astype('float32') / 255.
 
             if K.image_dim_ordering() == "th":
@@ -217,11 +220,11 @@ def fit(model, weight_path, batch_size=128, nb_epochs=100, save_history=True, hi
     #         callback_list.append(tensorboard)
 
     # print("Training model : %s" % (self.__class__.__name__))
-    model.fit_generator(image_generator(training_path, scale_factor=scale_factor, small_train_images=True,
+    model.fit_generator(image_generator(training_path, scale_factor=1, small_train_images=True,
                                         batch_size=batch_size),
                              steps_per_epoch=samples_per_epoch // batch_size + 1,
                              epochs=nb_epochs, callbacks=callback_list,
-                             validation_data=image_generator(validate_path, scale_factor=scale_factor, small_train_images=False, batch_size=batch_size),
+                             validation_data=image_generator(validate_path, scale_factor=1, small_train_images=False, batch_size=batch_size),
                              validation_steps=val_count // batch_size + 1)
 
     # data = image_lib_to_arrays("training_data/JPEG32", 32)
@@ -235,6 +238,7 @@ def fit(model, weight_path, batch_size=128, nb_epochs=100, save_history=True, hi
 
 sr = train()
 sr = fit(sr, weights_path)
+# TODO: call upscale
 
 
 
