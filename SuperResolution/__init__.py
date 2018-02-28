@@ -1,10 +1,10 @@
-from cv2.cv2 import cvtColor, COLOR_BGR2GRAY
+from cv2.cv2 import cvtColor, COLOR_BGR2GRAY, imread
 from keras.models import Model
 from keras.layers import Concatenate, Add, Average, Input, Dense, Flatten, BatchNormalization, Activation, LeakyReLU
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, UpSampling2D, Convolution2DTranspose
 from keras import backend as K
 from keras.utils.np_utils import to_categorical
-from scipy.misc import imsave, imread, imresize
+from scipy.misc import imsave, imresize
 import keras.callbacks as callbacks
 import keras.optimizers as optimizers
 from keras.preprocessing import image
@@ -44,8 +44,8 @@ scale_factor = 1
 # self.weight_path = "weights/SR Weights %dX.h5" % (self.scale_factor)
 weights_path = "weights/SR Weights %dX.h5" % (scale_factor)
 
-training_path = "training_data/"
-validate_path = "validation_data/"
+training_path = "training_data/colored/"
+validate_path = "validation_data/colored/"
 
 # members from BaseSuperResolution
 f1 = 9
@@ -180,7 +180,9 @@ def image_generator(directory, scale_factor=2, target_shape=None, channels=3, sm
 
         for i, j in enumerate(index_array):
             x_fn = X_filenames[j]
-            img = imread(x_fn,0)
+            img = imread(x_fn)
+            (b, g, r) = cv2.split(img)
+            img = cv2.merge([r, g, b])
             # img = cvtColor(img, COLOR_BGR2GRAY)
             if small_train_images:
                 img = imresize(img, (32 * image_scale_multiplier, 32 * image_scale_multiplier))
@@ -192,7 +194,9 @@ def image_generator(directory, scale_factor=2, target_shape=None, channels=3, sm
                 batch_x[i] = img
 
             y_fn = y_filenames[j]
-            img = imread(y_fn,0)
+            img = imread(y_fn)
+            (b, g, r) = cv2.split(img)
+            img = cv2.merge([r, g, b])
             # img = cvtColor(img, COLOR_BGR2GRAY)
             img = img.astype('float32') / 255.
 
@@ -307,7 +311,7 @@ def upscale(img_path, scale_factor=3, type_requires_divisible_shape=False, type_
     :param mode: mode of upscaling. Can be "patch" or "fast"
     """
     import os
-    from scipy.misc import imread, imresize, imsave
+    # from scipy.misc import imread, imresize, imsave
 
     # Destination path
     path = os.path.splitext(img_path)
@@ -315,7 +319,9 @@ def upscale(img_path, scale_factor=3, type_requires_divisible_shape=False, type_
 
     # Read image
     scale_factor = int(scale_factor)
-    true_img = imread(img_path, 0)
+    true_img = imread(img_path)
+    (b, g, r) = cv2.split(true_img)
+    true_img = cv2.merge([r, g, b])
     init_dim_1, init_dim_2 = true_img.shape[0], true_img.shape[1]
     if verbose: print("Old Size : ", true_img.shape)
     if verbose: print("New Size : (%d, %d, 3)" % (init_dim_1 * scale_factor, init_dim_2 * scale_factor))
@@ -402,7 +408,7 @@ def upscale(img_path, scale_factor=3, type_requires_divisible_shape=False, type_
 
 sr = get_model()
 # sr = fit(sr, weights_path)
-upscale(os.path.join(os.path.dirname(__file__), "test_images/X/image_02001.jpg"), mode="fast")
+upscale(os.path.join(os.path.dirname(__file__), "test_images/colored/X/image_02002.jpg"), mode="fast")
 
 
 
