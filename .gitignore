@@ -4,9 +4,9 @@
 *.rar
 
 flowers_dataset/
-lab3/flowers_dataset/
+Animals_Flowers_detection/flowers_dataset/
 cifar-10-batches-py/
-lab3/cifar-10-batches-py/
+Animals_Flowers_detection/cifar-10-batches-py/
 backup/
 
 ImageGeneration/inception_resnet_v2_weights_tf_dim_ordering_tf_kernels.h5
