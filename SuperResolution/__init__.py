@@ -408,7 +408,6 @@ def upscale(img_path, scale_factor=3, type_requires_divisible_shape=False, type_
 
 sr = get_model()
 # sr = fit(sr, weights_path)
-upscale(os.path.join(os.path.dirname(__file__), "test_images/colored/X/image_02002.jpg"), mode="fast")
-
+upscale(os.path.join(os.path.dirname(__file__), "image_02002.jpg"), mode="fast")
 
 

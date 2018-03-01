@@ -1,30 +1,17 @@
-import keras
 from keras.applications.inception_resnet_v2 import InceptionResNetV2
-from keras.preprocessing import image
-from keras.engine import Layer
-from keras.applications.inception_resnet_v2 import preprocess_input
-from keras.layers import Conv2D, UpSampling2D, InputLayer, Conv2DTranspose, Input, Reshape, merge, concatenate
-from keras.layers import Activation, Dense, Dropout, Flatten
-from keras.layers.normalization import BatchNormalization
-from keras.callbacks import TensorBoard
-from keras.models import Sequential, Model
-from keras.layers.core import RepeatVector, Permute
-from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
-from skimage.color import rgb2lab, lab2rgb, rgb2gray, gray2rgb
-from skimage.transform import resize
-from skimage.io import imsave
+from keras.layers import Conv2D, UpSampling2D, Input, Reshape, concatenate
+from keras.models import Model
+from keras.layers.core import RepeatVector
+from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
+from skimage.color import rgb2lab, rgb2gray, gray2rgb
 import numpy as np
 import os
-import random
 import tensorflow as tf
-
+import utils
 
 datasetLimit = 5000
-testLimit = 100
 
-
-# Get images
-
+# Prepare train images
 trainDatasetPath = './Resources/colored32/'
 X = []
 grayscaleFileList = os.listdir(trainDatasetPath)
@@ -33,8 +20,7 @@ for index in range(datasetLimit):
 X = np.array(X, dtype=float)
 Xtrain = (1.0/255) * X
 
-
-#Load weights
+#Load weights of resnet inception model
 inception = InceptionResNetV2(weights=None, include_top=True)
 inception.load_weights('./inception_resnet_v2_weights_tf_dim_ordering_tf_kernels.h5')
 inception.graph = tf.get_default_graph()
@@ -46,23 +32,10 @@ datagen = ImageDataGenerator(
         rotation_range=20,
         horizontal_flip=True)
 
-
-def create_inception_embedding(grayscaled_rgb):
-    grayscaled_rgb_resized = []
-    for i in grayscaled_rgb:
-        i = resize(i, (299, 299, 3), mode='constant')
-        grayscaled_rgb_resized.append(i)
-    grayscaled_rgb_resized = np.array(grayscaled_rgb_resized)
-    grayscaled_rgb_resized = preprocess_input(grayscaled_rgb_resized)
-    with inception.graph.as_default():
-        embed = inception.predict(grayscaled_rgb_resized)
-    return embed
-
-
 def image_a_b_gen(batch_size):
     for batch in datagen.flow(Xtrain, batch_size=batch_size):
         grayscaled_rgb = gray2rgb(rgb2gray(batch))
-        embed = create_inception_embedding(grayscaled_rgb)
+        embed = utils.create_inception_embedding(grayscaled_rgb, inception)
         lab_batch = rgb2lab(batch)
         X_batch = lab_batch[:,:,:,0]
         X_batch = X_batch.reshape(X_batch.shape+(1,))
@@ -108,34 +81,8 @@ batch_size = 100
 model.compile(optimizer='adam', loss='mse')
 model.fit_generator(image_a_b_gen(batch_size), epochs=50, steps_per_epoch=(datasetLimit / batch_size))
 
-
 # Save model
 model_json = model.to_json()
 with open("model.json", "w") as json_file:
     json_file.write(model_json)
 model.save_weights("color_tensorflow_real_mode.h5")
-
-#Make predictions on validation images
-testDatasetPath = "./Resources/test/original/"
-color_me = []
-testFileNames = os.listdir(testDatasetPath)
-for index in range(testLimit):
-    color_me.append(img_to_array(load_img(testDatasetPath + testFileNames[index])))
-color_me = np.array(color_me, dtype=float)
-color_me = 1.0/255*color_me
-color_me = gray2rgb(rgb2gray(color_me))
-color_me_embed = create_inception_embedding(color_me)
-color_me = rgb2lab(color_me)[:,:,:,0]
-color_me = color_me.reshape(color_me.shape+(1,))
-
-
-# Test model
-output = model.predict([color_me, color_me_embed], batch_size=batch_size)
-output = output * 128
-
-# Output colorizations
-for i in range(len(output)):
-    cur = np.zeros((32, 32, 3))
-    cur[:,:,0] = color_me[i][:,:,0]
-    cur[:,:,1:] = output[i]
-    imsave("./Resources/test/result/img_"+str(i)+".png", lab2rgb(cur))
