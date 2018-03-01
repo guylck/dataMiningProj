@@ -46,6 +46,6 @@ of the weights of inception resnet v2 for the coloring model.
 the super resolution models weights
 
 color and resize own images: 1) put images in the directory you want
-							 2) make sure you have directory: Test/color result and Test/final result
-							 3) run color_and_resize_images.py and enter the directory with the images
+			     2) make sure you have directory: Test/color result and Test/final result
+			     3) run color_and_resize_images.py and enter the directory with the images
 				
