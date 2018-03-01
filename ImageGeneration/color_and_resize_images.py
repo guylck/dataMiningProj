@@ -8,6 +8,8 @@ import os
 import utils
 from keras.applications.inception_resnet_v2 import InceptionResNetV2
 import tensorflow as tf
+import super_resolution_model
+
 
 def color_images(images_dir):
 
@@ -17,7 +19,7 @@ def color_images(images_dir):
     inception.graph = tf.get_default_graph()
 
     # Prepare the test data for using it as input for the model
-    testDatasetPath = images_dir #"./Resources/test/original/"
+    testDatasetPath = images_dir
     color_me = []
     testFileNames = os.listdir(testDatasetPath)
     for img_name in testFileNames:
@@ -30,11 +32,11 @@ def color_images(images_dir):
     color_me = color_me.reshape(color_me.shape+(1,))
 
     # Loads the model and its weights
-    with open("./saved models/model.json", "r") as json_file:
+    with open("./saved models/image_coloring_model.json", "r") as json_file:
         model = model_from_json(json_file.read())
     model.load_weights("./saved models/color_tensorflow_real_mode.h5")
 
-    # Test model
+    # Test coloring model
     output = model.predict([color_me, color_me_embed], batch_size=188)
     output = output * 128
 
@@ -43,14 +45,16 @@ def color_images(images_dir):
         cur = np.zeros((32, 32, 3))
         cur[:,:,0] = color_me[i][:,:,0]
         cur[:,:,1:] = output[i]
-        imsave("./Resources/test/result/img_"+str(i)+".png", lab2rgb(cur))
+        imsave("./Test/coloring result/img_"+str(i)+".png", lab2rgb(cur))
+
 
 if __name__=="__main__":
 
     images_dir = input("Enter the path of the test images: ")
     assert os.path.exists(images_dir), "I did not find the images at, " + str(images_dir)
 
-    # Colors the images and saves them in "./Resources/test/result/"
+    # Colors the images and saves them in "./Test/coloring result"
     color_images(images_dir)
 
-    #TODO: take the images from result and resize them with super resolution
+    # Resizes the images and saves them in "./Test/final result"
+    super_resolution_model.predict_folder("./Test/coloring result/", "./Test/final result/")

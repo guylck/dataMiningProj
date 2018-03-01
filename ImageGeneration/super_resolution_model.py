@@ -31,8 +31,7 @@ def PSNRLoss(y_true, y_pred):
 scale_factor = 3
 
 # Will be determined after training
-#weights_path = "weights/SR Weights %dX.h5" % (scale_factor)
-weights_path = "./weights/SR Weights 1X.h5"
+weights_path = "./saved models/SR Weights.h5"
 
 training_path = "./Resources/training_data/colored/"
 validate_path = "./Resources/validation_data/colored/"
@@ -170,7 +169,7 @@ def fit(model, weight_path, epochs=1, save_history=True, history_fn="Model Histo
     return model
 
 
-def upscale(model, img_path, results_folder_path="./", intermediate_folder_path="./", save_intermediate=True, suffix="scaled", verbose=True):
+def upscale(model, img_path, results_folder_path="./", intermediate_folder_path="./", save_intermediate=False, suffix="scaled", verbose=True):
 
     # Destination path
     path = os.path.splitext(img_path)
@@ -217,12 +216,10 @@ def upscale(model, img_path, results_folder_path="./", intermediate_folder_path=
     result = result[0, :, :, :] # Access the 3 Dimensional image vector
     result = np.clip(result, 0, 255).astype('uint8')
 
-    """
     # Used to remove noisy edges
     result = cv2.pyrUp(result)
     result = cv2.medianBlur(result, 3)
     result = cv2.pyrDown(result)
-    """
 
     if verbose:
         print("\nCompleted De-processing image.")
@@ -231,7 +228,7 @@ def upscale(model, img_path, results_folder_path="./", intermediate_folder_path=
     imsave(filename, result)
 
 
-def predict_folder(images_path, result_path, intermediate_path):
+def predict_folder(images_path, result_path, intermediate_path="./"):
 
     # Prepare the test data for using it as input for the model
     testDatasetPath = images_path
@@ -244,7 +241,6 @@ def predict_folder(images_path, result_path, intermediate_path):
 if __name__ == "__main__":
     #sr = get_model()
     #sr = fit(sr, weights_path)
-    #upscale("./cropped-pink-flower-32x32.jpg")
     predict_folder("./Resources/test/test/", "./Resources/test/result/", "./Resources/test/intermediate/")
 
 
