@@ -1,4 +1,4 @@
-Ex1:
+Digit_detection:
 ex1.ipynb includes the models for recognizing digits of Mnist,
 and also includes the code to predict my own images.
 
@@ -11,7 +11,7 @@ To predict own images:  1) put images in the "images" folder ( There are some im
 The "Reports" folder holds 3 Word docx with the metadata about the models.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Ex2:
+Animals_flowers_detection:
 Ex2.ipynb includes the models for recognizing animals from Cifar, and also
 includes the fine tuned model for recognizing flowers
 
