@@ -31,8 +31,7 @@ def PSNRLoss(y_true, y_pred):
 scale_factor = 3
 
 # Will be determined after training
-#weights_path = "weights/SR Weights %dX.h5" % (scale_factor)
-weights_path = "./weights/SR Weights 1X.h5"
+weights_path = "weights/SR Weights %dX.h5" % (scale_factor)
 
 training_path = "./Resources/training_data/colored/"
 validate_path = "./Resources/validation_data/colored/"
@@ -143,7 +142,7 @@ def image_generator(directory, batch_size, shuffle=True, seed=None, image_scale_
         yield (batch_x, batch_y)
 
 
-def fit(model, weight_path, epochs=1, save_history=True, history_fn="Model History.txt"):
+def fit(model, weight_path, epochs=100, save_history=True, history_fn="Model History.txt"):
     """
     method to train the model.
     """
@@ -242,9 +241,8 @@ def predict_folder(images_path, result_path, intermediate_path):
 
 
 if __name__ == "__main__":
-    #sr = get_model()
-    #sr = fit(sr, weights_path)
-    #upscale("./cropped-pink-flower-32x32.jpg")
+    sr = get_model()
+    sr = fit(sr, weights_path)
     predict_folder("./Resources/test/test/", "./Resources/test/result/", "./Resources/test/intermediate/")
 
 
