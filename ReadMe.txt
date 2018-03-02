@@ -45,7 +45,15 @@ of the weights of inception resnet v2 for the coloring model.
 *make sure you have a "saved models" folder with the coloring model Json file, coloring models weights and
 the super resolution models weights
 
+Link to one drive shared folder with the weights, Test example and our zipped project:
+https://1drv.ms/f/s!AiNgY5UvQ308gYBc2XhF9CIrHjvcZw
+
+copy the weights file which is named to the root folder, ImageGeneration:
+inception_resnet_v2_weights_tf_dim_ordering_tf_kernels.h5
+
 color and resize own images: 1) put images in the directory you want
 			     2) make sure you have directory: Test/color result and Test/final result
 			     3) run color_and_resize_images.py and enter the directory with the images
+
+The "Reports" folder holds a Word docx with the metadata about the models.
 				
