@@ -1,4 +1,5 @@
-Digit_detection:
+digit_detection:
+
 ex1.ipynb includes the models for recognizing digits of Mnist,
 and also includes the code to predict my own images.
 
@@ -12,6 +13,7 @@ The "Reports" folder holds 3 Word docx with the metadata about the models.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Animals_flowers_detection:
+
 Ex2.ipynb includes the models for recognizing animals from Cifar, and also
 includes the fine tuned model for recognizing flowers
 
@@ -30,4 +32,20 @@ predict own images:
 		 4) run the .py file or the ipynb jupyter notebook ( the wanted part of the code )
 
 The "Reports" folder holds 3 Word docx with the metadata about the models.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ImageGeneration:
+
+color_and_resize_images.py includes all the code for coloring a 32x32 Grayscale flower img
+and then upsacling it to 96X96 using super resolution.
+
+*you need to make sure you got "inception_resnet_v2_weights_tf_dim_ordering_tf_kernels.h5" file
+of the weights of inception resnet v2 for the coloring model.
+
+*make sure you have a "saved models" folder with the coloring model Json file, coloring models weights and
+the super resolution models weights
+
+color and resize own images: 1) put images in the directory you want
+			     2) make sure you have directory: Test/color result and Test/final result
+			     3) run color_and_resize_images.py and enter the directory with the images
 				
