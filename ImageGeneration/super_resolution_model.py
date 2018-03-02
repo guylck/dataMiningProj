@@ -63,22 +63,7 @@ def get_model(load_weights=False, image_scale_multiplier=1):
 
     return model
 
-
-def image_lib_to_arrays(path, size):
-    img_list = []
-    for img in os.listdir(path):
-        img_path = os.path.join(path, img)
-        # Reads the image and resize it
-        img = image.load_img(img_path, target_size=(size, size))
-        img_list.append(np.array(img))
-
-    img_list = np.asarray(img_list)
-    img_list = img_list.astype('float32')
-    img_list /= 255
-
-    return img_list
-
-
+# This generator responsible for shuffling the epochs content
 def _index_generator(N, batch_size, shuffle=True, seed=None):
     batch_index = 0
     total_batches_seen = 0
@@ -106,6 +91,7 @@ def _index_generator(N, batch_size, shuffle=True, seed=None):
                current_index, current_batch_size)
 
 
+# This generator responsible for giving the model appropriate inputs
 def image_generator(directory, batch_size, shuffle=True, seed=None, image_scale_multiplier=1):
     x_image_shape = y_image_shape = \
         (model_width * scale_factor * image_scale_multiplier,
@@ -233,8 +219,9 @@ def predict_folder(images_path, result_path, intermediate_path="./"):
     # Prepare the test data for using it as input for the model
     testDatasetPath = images_path
     testFileNames = os.listdir(testDatasetPath)
+    model = get_model(load_weights=True, image_scale_multiplier=1)
     for img_name in testFileNames:
-        upscale(get_model(load_weights=True, image_scale_multiplier=1),
+        upscale(model,
                 os.path.join(testDatasetPath, img_name), result_path, intermediate_path)
 
 
